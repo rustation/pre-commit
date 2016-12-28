@@ -80,13 +80,13 @@ fn format_test((k, v): (&String, &toml::Value)) -> String {
     format!(r#"echo -n {}
 
 if result=$({}); then
-    echo -e " $check"
+    echo " $check"
 else
-    echo -e " $cross"
-    echo -e " $result"
+    echo " $cross"
+    echo " $result"
     errors=1
 fi
 "#,
             k,
-            v)
+            v.as_str().unwrap())
 }
