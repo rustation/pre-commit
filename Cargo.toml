@@ -1,6 +1,6 @@
 [package]
 name = "pre-commit"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Joe Grund <grundjoseph@gmail.com>"]
 build = "build.rs"
 description = "Reads hooks metadata from Cargo.toml and executes on commit"
