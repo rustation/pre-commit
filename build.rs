@@ -62,29 +62,21 @@ red='\033[0;31m'
 nc='\033[0m'
 check="$green$check_char$nc"
 cross="$red$cross_char$nc"
-errors=0
 
-{}
-
-if [ "$errors" != 0 ]; then
-	echo "Failed"
-	exit 1
-else
-	echo "OK"
-fi"#,
+{}"#,
             s)
 }
 
 fn format_test((k, v): (&String, &toml::Value)) -> String {
 
-    format!(r#"echo -n {}
+    format!(r#"printf "{}"
 
 if result=$({}); then
     echo " $check"
 else
     echo " $cross"
     echo " $result"
-    errors=1
+    exit 1
 fi
 "#,
             k,
