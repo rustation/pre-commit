@@ -1,0 +1,13 @@
+[package]
+name = "pre-commit"
+version = "0.1.0"
+authors = ["Joe Grund <grundjoseph@gmail.com>"]
+build = "build.rs"
+description = "Reads hooks metadata from Cargo.toml and executes on commit"
+license = "MIT"
+repository = "https://github.com/rustation/pre-commit"
+readme = "README.md"
+
+[build-dependencies]
+toml = "0.2"
+rustc-serialize = "0.3.0"
