@@ -12,6 +12,8 @@ fn main() {
 fn find_cargo_toml(p: &path::Path) -> io::Result<fs::File> {
     let cargo_toml = p.join("Cargo.toml");
 
+    println!("looking for toml in {:?}", cargo_toml);
+
     if cargo_toml.exists() {
         return fs::File::open(cargo_toml);
     }
@@ -33,6 +35,8 @@ fn copy_file() -> io::Result<()> {
 
     let hooks_dir = cwd.join(".git")
         .join("hooks");
+
+    println!("Hooks dir {:?}", hooks_dir);
 
     if !hooks_dir.exists() {
         return Ok(());
