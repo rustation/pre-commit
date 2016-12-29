@@ -3,6 +3,7 @@ extern crate rustc_serialize;
 
 use std::{env, io, fs, path};
 use std::io::prelude::*;
+use std::os::unix::fs::PermissionsExt;
 
 fn main() {
     copy_file().unwrap();
@@ -26,6 +27,14 @@ fn copy_file() -> io::Result<()> {
     println!("{:?}", pre_commit);
 
     let mut f = fs::File::create(&pre_commit)?;
+
+    if cfg!(target_family = "unix") {
+        let metadata = f.metadata()?;
+        let mut permissions = metadata.permissions();
+        permissions.set_mode(0o777);
+        fs::set_permissions(&pre_commit, permissions)?;
+    }
+
     f.write_all(contents.as_bytes())
 }
 
