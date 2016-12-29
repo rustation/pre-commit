@@ -1,7 +1,7 @@
 extern crate toml;
 extern crate rustc_serialize;
 
-use std::{env, io, fs};
+use std::{env, io, fs, path};
 use std::io::prelude::*;
 use std::os::unix::fs::PermissionsExt;
 
@@ -9,20 +9,36 @@ fn main() {
     copy_file().unwrap();
 }
 
+fn find_cargo_toml(p: &path::Path) -> io::Result<fs::File> {
+    let cargo_toml = p.join("Cargo.toml");
+
+    if cargo_toml.exists() {
+        return fs::File::open(cargo_toml);
+    }
+
+    let parent = p.parent();
+
+    match parent {
+        Some(ref p) => return find_cargo_toml(p),
+        None => return Err(io::Error::new(io::ErrorKind::NotFound, "Cargo.toml not found")),
+    }
+}
+
 fn copy_file() -> io::Result<()> {
     let cwd = env::current_dir()?;
-    let cargo_toml = cwd.clone()
-        .join("cargo.toml");
-    let mut f = fs::File::open(cargo_toml)?;
+    let mut f = find_cargo_toml(&cwd)?;
     let mut s = String::new();
     f.read_to_string(&mut s)?;
     let contents = build_script(s);
 
-    let pre_commit = cwd.join(".git")
-        .join("hooks")
-        .join("pre-commit");
+    let hooks_dir = cwd.join(".git")
+        .join("hooks");
 
-    println!("{:?}", pre_commit);
+    if !hooks_dir.exists() {
+        return Ok(());
+    }
+
+    let pre_commit = hooks_dir.join("pre-commit");
 
     let mut f = fs::File::create(&pre_commit)?;
 
