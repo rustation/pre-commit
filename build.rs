@@ -1,7 +1,7 @@
 extern crate toml;
 extern crate rustc_serialize;
 
-use std::{env, io, fs, path};
+use std::{env, io, fs};
 use std::io::prelude::*;
 use std::os::unix::fs::PermissionsExt;
 
@@ -10,9 +10,7 @@ fn main() {
 }
 
 fn copy_file() -> io::Result<()> {
-    let dir = env::var("PWD").unwrap();
-    let cwd = path::Path::new(&dir);
-
+    let cwd = env::current_dir()?;
     let cargo_toml = cwd.clone()
         .join("cargo.toml");
     let mut f = fs::File::open(cargo_toml)?;
