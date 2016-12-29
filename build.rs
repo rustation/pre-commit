@@ -9,31 +9,31 @@ fn main() {
     copy_file().unwrap();
 }
 
-fn find_cargo_toml(p: &path::Path) -> io::Result<fs::File> {
-    let cargo_toml = p.join("Cargo.toml");
+fn find_crate_root(p: &path::Path) -> io::Result<&path::Path> {
+    println!("looking for root in {:?}", p);
 
-    println!("looking for toml in {:?}", cargo_toml);
-
-    if cargo_toml.exists() {
-        return fs::File::open(cargo_toml);
+    if p.join("Cargo.toml").exists() {
+        return Ok(p);
     }
 
     let parent = p.parent();
 
     match parent {
-        Some(ref p) => return find_cargo_toml(p),
-        None => return Err(io::Error::new(io::ErrorKind::NotFound, "Cargo.toml not found")),
+        Some(ref p) => return find_crate_root(p),
+        None => return Err(io::Error::new(io::ErrorKind::NotFound, "Crate root not found")),
     }
 }
 
 fn copy_file() -> io::Result<()> {
-    let cwd = env::current_dir()?;
-    let mut f = find_cargo_toml(&cwd)?;
+    let ref out = env::var("OUT_DIR").unwrap();
+    let p = path::Path::new(out);
+    let root = find_crate_root(&p)?;
+    let mut f = fs::File::open(root.join("Cargo.toml"))?;
     let mut s = String::new();
     f.read_to_string(&mut s)?;
     let contents = build_script(s);
 
-    let hooks_dir = cwd.join(".git")
+    let hooks_dir = root.join(".git")
         .join("hooks");
 
     println!("Hooks dir {:?}", hooks_dir);
