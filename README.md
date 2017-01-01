@@ -7,7 +7,8 @@ Reads hooks metadata from Cargo.toml and executes on commit
 ### Installing
 
 ```
-$ cargo install pre-commit
+[dependencies]
+pre-commit = "0.5.2"
 ```
 
 ### Usage
