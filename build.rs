@@ -99,9 +99,9 @@ fn format_test((k, v): (&String, &toml::Value)) -> String {
     format!(r#"printf "{}"
 
 if result=$({}); then
-    echo " $check"
+    echo -e " $check"
 else
-    echo " $cross"
+    echo -e " $cross"
     echo " $result"
     exit 1
 fi
