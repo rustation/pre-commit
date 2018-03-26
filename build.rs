@@ -78,8 +78,7 @@ fn get_as_table<'a>(name: &str, x: &'a toml::Table) -> Option<&'a toml::Table> {
 }
 
 fn format_script(s: String) -> String {
-    format!(r#"
-#!/bin/bash
+    format!(r#"#!/bin/bash
 set -eu
 
 check_char='\xE2\x9C\x93'
